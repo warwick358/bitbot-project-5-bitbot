@@ -51,10 +51,70 @@ Go to the "variable" tab and create the variable's "rightMotor", and "leftMotor"
 
 ## Step 4 Roll controll of motors
 We are going to create 2 "if then" blocks that will look almost identical to controlthe left and right motors.
+First go to the "logic" tab and get a "if then" block and place it in the "froever" block.
+Next go to the "logic" tab, "comparison" and get a "0 < 0" block and place it the "true" space of the "if then" block.
+Then go to the "variable" tab and get "right_motor" and replace the first "0" from the "0 < 0" block, replace the second "0" with "-10".
+Now take 2 "set to" blocks from the "variable" tab and place them under the "then" in the "if then" block
+In the first "set to" block change the dropdown to "right_motor" and replace the "0" with "0 x 0" from the "math" tab.
+In the "0 x 0" block replace the first "0" with the "roll_raw" block from the "variable" tab and the second "0" with "-1" this will changethe number from a negative to a posative.
+In the second "set to" block change the dropdown to "left_motor" and leave the "0".
+
+Copy the "if then" block and everything in it. Place the new "if then" block under the first one.
+Change the comparison in the new "if then" to the following "roll_raw > 10"
+Change the first "Set to" so that "Left_motor = raw_roll"
+ Change the second "Set to" so that "right_motor = 0"
+
+```block
+})
+let left_motor = 0
+let right_motor = 0
+let raw_roll = 0
+let raw_pitch = 0
+basic.forever(function () {
+    if (raw_roll < -10) {
+        right_motor = raw_roll * -1
+        left_motor = 0
+    }
+    if (raw_roll > 10) {
+        left_motor = raw_roll
+        right_motor = 0
+    }
+})
+```
+## Step 5 useing the pitch (forward/backward) to get the speed and direction to move in a straight line.
+We need to add another "if then" block from the "logic" tab under the last section in the "forever" block.
+From the "logic tab "boolean" heading we need to add the "and" block in the "true" space of the "if then"block.
+Next we go to the "logic" tab and then "comparison" to get the "0 < 0" Block and place it in the first tab of the "and" block.
+The "comparison" "0 < 0" Block needs to look like "-10 < raw_roll" ("raw_roll" is from the "variable" tab).
+In the second section of the "and" block we need another "logic" tab and then "comparison" block. "0 >0".
+This "comparison" "0 > 0" Block needs to look like "raw_roll > 10" ("raw_roll" is from the "variable" tab).
 
 
+```block
+let right_motor = 0
+let left_motor = 0
+basic.forever(function () {
+    let raw_roll = 0
+    if (raw_roll < -10) {
+        right_motor = raw_roll * -1
+        left_motor = 0
+    }
+    if (raw_roll > 10) {
+        left_motor = raw_roll
+        right_motor = 0
+    }
+    if (-10 < raw_roll && raw_roll < 10) {
+        let raw_pitch = 0
+        left_motor = raw_pitch * -1
+        left_motor = raw_pitch * -1
+    }
+})
+```
 
-## all the code
+## Step 6 Mapping the tilt angle to motor speeds
+
+
+ ```block
 radio.onReceivedValue(function (name, value) {
     if (name == "pitch") {
         raw_pitch = value
@@ -84,3 +144,4 @@ basic.forever(function () {
     bitbot.rotate(BBRobotDirection.Left, Math.map(left_motor, 0, 180, 0, 1024))
     bitbot.rotate(BBRobotDirection.Right, Math.map(right_motor, 0, 180, 0, 1024))
 })
+```

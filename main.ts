@@ -22,7 +22,7 @@ basic.forever(function () {
     }
     if (-10 < raw_roll && raw_roll < 10) {
         left_motor = raw_pitch * -1
-        left_motor = raw_pitch * -1
+        right_motor = raw_pitch * -1
     }
     bitbot.rotate(BBRobotDirection.Left, Math.map(left_motor, 0, 180, 0, 1024))
     bitbot.rotate(BBRobotDirection.Right, Math.map(right_motor, 0, 180, 0, 1024))
