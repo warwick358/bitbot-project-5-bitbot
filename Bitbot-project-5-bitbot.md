@@ -88,6 +88,11 @@ Next we go to the "logic" tab and then "comparison" to get the "0 < 0" Block and
 The "comparison" "0 < 0" Block needs to look like "-10 < raw_roll" ("raw_roll" is from the "variable" tab).
 In the second section of the "and" block we need another "logic" tab and then "comparison" block. "0 >0".
 This "comparison" "0 > 0" Block needs to look like "raw_roll > 10" ("raw_roll" is from the "variable" tab).
+Next go to the "variable" tab and get a "set to" block and place it under "then" in the "if then" block.
+Use the dropdown to change to the "left_motor" and replace the "0" with a "0 x 0" block from the "math" tab, change the "0" to "-1"
+Now copy the entire "set to" block and place it under the original "set to" block.
+Use the dropdown to change to the "right_motor".
+(Because the ​rawPitch​ value is the angle that the controller microbit is sending when tilted forwards the angle is negative. So we multiply by -1 changing the number to posative makeing the Bitbot go forwards.)
 
 
 ```block
@@ -106,12 +111,43 @@ basic.forever(function () {
     if (-10 < raw_roll && raw_roll < 10) {
         let raw_pitch = 0
         left_motor = raw_pitch * -1
-        left_motor = raw_pitch * -1
+        right_motor = raw_pitch * -1
     }
 })
 ```
 
 ## Step 6 Mapping the tilt angle to motor speeds
+We are going to use a ​map​ block to convert the ​motorLeft​ and ​motorRight​ to motor speeds.
+The last 2 blocks in the code are the same except one is for the left motor and the other is for the right.
+Go to the "bitbot" "motors" tab and get a "spin at speed %" block and place it under the last "if then" block in the "forever" block.
+Use the dropdown to change to the "left" option and go to the "math" tab and get the "map" block and replace the "0" in the "spin at speed %" block.
+In the first "0" on the map block insert "left_motor" from the "variable" tab. The remaining numbers need to be "from low 0 to high 180 to low 0 to high 1024"
+Now copy the entire block and place it under the first "spin at speed %" block, change the dropdown to "right" and replace the "left_motor" to "right_motor "left_motor" from the "variable" tab.
+
+```block
+let right_motor = 0
+let left_motor = 0
+basic.forever(function () {
+    let raw_roll = 0
+    if (raw_roll < -10) {
+        right_motor = raw_roll * -1
+        left_motor = 0
+    }
+    if (raw_roll > 10) {
+        left_motor = raw_roll
+        right_motor = 0
+    }
+    if (-10 < raw_roll && raw_roll < 10) {
+        let raw_pitch = 0
+        left_motor = raw_pitch * -1
+        right_motor = raw_pitch * -1
+    }
+    bitbot.rotate(BBRobotDirection.Left, Math.map(left_motor, 0, 180, 0, 1024))
+    bitbot.rotate(BBRobotDirection.Right, Math.map(right_motor, 0, 180, 0, 1024))
+})
+```
+
+## Step 7 download the code to the Bitbot microbit.
 
 
  ```block
@@ -139,7 +175,7 @@ basic.forever(function () {
     }
     if (-10 < raw_roll && raw_roll < 10) {
         left_motor = raw_pitch * -1
-        left_motor = raw_pitch * -1
+        right_motor = raw_pitch * -1
     }
     bitbot.rotate(BBRobotDirection.Left, Math.map(left_motor, 0, 180, 0, 1024))
     bitbot.rotate(BBRobotDirection.Right, Math.map(right_motor, 0, 180, 0, 1024))
