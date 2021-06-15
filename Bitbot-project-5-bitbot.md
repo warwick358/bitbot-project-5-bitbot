@@ -4,11 +4,11 @@
 Set our radio group
 
 Firstly we will set our radio group to match the radio channel used to send data from our controller micro:bit. 
-Instead of sending this time, we'll put our code in the on radio received block and use an "if then" block to decide which data is 'pitch' and which is 'roll'.
+Instead of sending this time we'll put our code in the on radio received block and use an "if then" block to decide which data is 'pitch' and which is 'roll'.
 You'll also need to create two variables called 'raw_Roll' and 'raw_Pitch' - we'll store the received data in these.
 
 Go to the "radio" tab and select the "set group" block and place it in the "on start" block. The number in the block should be the same as the number in the controller you made in the previous tutorial.
-Then go to the "variable" tab and create 2 variable's called"rawroll" and "rawpitch".
+Then go to the "variable" tab and create 2 variable's called "raw_roll" and "raw_pitch".
 ```block
 radio.setGroup(1)
 ```
@@ -16,12 +16,12 @@ radio.setGroup(1)
 ## Step 2 
 Creating the receive information.
 
-Open the "radio" tab and get a "on radio received name value" block.
-Go to the "logic" tab and get a "if then" block and place it in the "on radio received name value" block.
-Next go to the "logic" tab under comparison look for the "0 = 0" block and replace "true" in the 'If then" block.
+Open the "radio" tab and get the "on radio received name value" block.
+Go to the "logic" tab and get the "if then" block and place it in the "on radio received name value" block.
+Next go to the "logic" tab under comparison look for the "0 = 0" block and replace "true" in the "If then" block.
 From the "on radio received name value" block drag "name" into the first "0" in the "0 = 0" block and the second "0" with "pitch".
 Go to the "variable" tab and select the "set to" block and place it in the "if then" block.
-Chenge the dropdown tab to "raw_pitch" 
+Change the dropdown tab to "raw_pitch" 
 From the "on radio received name value" block drag "value" and replace the "0".
 
 Copy the entire "if then" block with the "set to" block and place it under the "if then" block in the "on radio received name value" block.
@@ -45,12 +45,15 @@ radio.setGroup(1)
 Convert 'roll' data into left and right motor speeds
 
 The roll or pitch data is an angle, so we need to check whether the controller micro:bit is tilted: 
-●  right (roll greater than 10 degrees) 
-●  left (roll less than -10 degrees)
 
-These variables are used to hold the speed we want each motor to run at. But before we send these to the motors, we should check if the micro:bit controller is not tilted left or right. Although this should be 0 degrees, we're human so we'll say between -10 and 10 degree just to make the controls a bit easier. 
+right (roll greater than 10 degrees) 
 
-If the answer is left, the value is going to be negative and this would make the motor go the wrong way, so we multiply it by -1.
+left (roll less than -10 degrees)
+
+These variables are used to hold the speed we want each motor to run at. But before we send these to the motors, we should check if the micro:bit controller is not tilted left or right. Although this should be 0 degrees, to make the controls easier we will create a variance of 20 degrees between -10 and 10 degrees . 
+
+If the answer is left, the value is going to be negative and this would make the motor go the wrong way, so we 
+If the controlling Bitbot is tilted left it will produce a negative number. Negative numbers will be interpreted as reverse by the motors. In order to create the correct rotation of the motor we will invert the number by multiplying it by -1 creating the correct rotation.
 
 You'll need to create two more variables: rightMotor, and leftMotor for the code. 
 Go to the "variable" tab and create the variable's "rightMotor", and "leftMotor"
@@ -59,13 +62,13 @@ Go to the "variable" tab and create the variable's "rightMotor", and "leftMotor"
 Roll controll of motors
 
 
-We are going to create 2 "if then" blocks that will look almost identical to controlthe left and right motors.
-First go to the "logic" tab and get a "if then" block and place it in the "froever" block.
+We are going to create 2 "if then" blocks that will look almost identical to control the left and right motors.
+First go to the "logic" tab and get a "if then" block and place it in the "forever" block.
 Next go to the "logic" tab, "comparison" and get a "0 < 0" block and place it the "true" space of the "if then" block.
 Then go to the "variable" tab and get "right_motor" and replace the first "0" from the "0 < 0" block, replace the second "0" with "-10".
 Now take 2 "set to" blocks from the "variable" tab and place them under the "then" in the "if then" block.
 In the first "set to" block change the dropdown to "right_motor" and replace the "0" with "0 x 0" from the "math" tab.
-In the "0 x 0" block replace the first "0" with the "roll_raw" block from the "variable" tab and the second "0" with "-1" this will changethe number from a negative to a posative.
+In the "0 x 0" block replace the first "0" with the "roll_raw" block from the "variable" tab and the second "0" with "-1" this will change the number from a negative to a positive.
 In the second "set to" block change the dropdown to "left_motor" and leave the "0".
 
 Copy the "if then" block and everything in it. Place the new "if then" block under the first one.
@@ -91,10 +94,10 @@ basic.forever(function () {
 })
 ```
 ## Step 5 
-Useing the pitch (forward/backward) to get the speed and direction to move in a straight line.
+Using the pitch (forward/backward) to get the speed and direction to move in a straight line.
 
 We need to add another "if then" block from the "logic" tab under the last section in the "forever" block.
-From the "logic tab "boolean" heading we need to add the "and" block in the "true" space of the "if then"block.
+From the "logic" tab "boolean" heading we need to add the "and" block in the "true" space of the "if then" block.
 Next we go to the "logic" tab and then "comparison" to get the "0 < 0" Block and place it in the first tab of the "and" block.
 The "comparison" "0 < 0" Block needs to look like "-10 < raw_roll" ("raw_roll" is from the "variable" tab).
 In the second section of the "and" block we need another "logic" tab and then "comparison" block. "0 >0".
@@ -103,7 +106,7 @@ Next go to the "variable" tab and get a "set to" block and place it under "then"
 Use the dropdown to change to the "left_motor" and replace the "0" with a "0 x 0" block from the "math" tab, change the "0" to "-1".
 Now copy the entire "set to" block and place it under the original "set to" block.
 Use the dropdown to change to the "right_motor".
-(Because the rawPitch value is the angle that the controller microbit is sending when tilted forwards the angle is negative. So we multiply by -1 changing the number to posative makeing the Bitbot go forwards.)
+(Because the rawPitch value is the angle that the controller microbit is sending when tilted forwards the angle is negative. So we multiply by -1 changing the number to positive makeing the Bitbot go forwards.)
 
 ```block
 let right_motor = 0
